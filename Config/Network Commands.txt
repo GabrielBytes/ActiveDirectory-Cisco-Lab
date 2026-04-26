@@ -1,0 +1,62 @@
+Switch :
+
+Switch>enable
+Switch# configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Switch(config)#vlan 10
+Switch(config-vlan)#name SERVERS
+Switch(config-vlan)#vlan 20
+Switch(config-vlan)#name CLIENTS
+Switch(config-vlan)#exit
+Switch(config)#interface f0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#interface f0/2
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#exit
+Switch(Config)#
+Switch(config)#interface g0/1
+Switch(config-if)#switch mode trunk
+Switch(config-if)#exit
+Switch(Config)#
+Switch#
+
+Router:
+
+Router>enable
+Router#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#interface g0/0
+Router(config-if)#no shutdown
+
+Router(config-if)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to up
+
+Router(config-if)#interface g0/0.10
+Router(config-subif)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0.10, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0.10, changed state to up
+
+Router(config-subif)#encapsulation dot1Q 10
+Router(config-subif)#ip address 192.168.10.1 255.255.255.0
+Router(config-subif)#exit
+Router(config)#interface g0/0.20
+Router(config-subif)#
+%LINK-5-CHANGED: Interface GigabitEthernet0/0.20, changed state to up
+
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0.20, changed state to up
+
+Router(config-subif)#encapsulation dot1Q 20
+Router(config-subif)#ip address 192.168.20.1 255.255.255.0
+Router(config-subif)#exit	
+Router(config)#ip dhcp excluded-address 192.168.10.1 192.168.10.20
+Router(config)#ip dhcp excluded-address 192.168.20.1 192.168.20.20
+Router(config)#ip dhcp pool CLIENT_POOL
+Router(dhcp-config)#network 192.168.20.0 255.255.255.0
+Router(dhcp-config)#default-router 192.168.20.1
+Router(dhcp-config)#dns-server 192.168.10.10
+Router(dhcp-config)#
